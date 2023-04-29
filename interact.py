@@ -10,10 +10,10 @@ with open(COMPILED_SMART_CONTRACT_PATH) as f:
     contract_abi = compiled_contract["abi"]
     contract_bytecode = compiled_contract["bytecode"]
 
-contract_address = '0xCd40003af0FFD2AC816936C975d1Dd31Bc97aEDA'
+contract_address = '<CONTRACT ADDRESS>'
 
 # Connect to the Ropsten Ethereum network using Infura and web3.py
-w3 = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/f0a0d78881ca40d2b86e7adff9569c45'))
+w3 = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/<API KEY>'))
 
 # Check if connected to the Ethereum network
 if not w3.is_connected():

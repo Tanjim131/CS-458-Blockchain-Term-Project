@@ -15,11 +15,11 @@ with open(COMPILED_SMART_CONTRACT_PATH) as f:
 # TESTNET = "rinkeby"  # Replace with the desired testnet: ropsten, rinkeby, kovan, or goerli
 # w3 = Web3(HTTPProvider(f"https://{TESTNET}.infura.io/v3/{INFURA_API_KEY}"))
 
-w3 = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/f0a0d78881ca40d2b86e7adff9569c45'))
+w3 = Web3(Web3.HTTPProvider('https://sepolia.infura.io/v3/<API KEY>'))
 
 # Set up the account to deploy the contract
 # PRIVATE_KEY = os.environ["PRIVATE_KEY"]
-account = w3.eth.account.from_key("4dfd3a4a92df78920ea83d440d44eb8a7d9f747c909c270c4e515ea881633e73")
+account = w3.eth.account.from_key("<PRIVATE KEY>")
 w3.eth.defaultAccount = account.address
 
 # Set up the contract object
