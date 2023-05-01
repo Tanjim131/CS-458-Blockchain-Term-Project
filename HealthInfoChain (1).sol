@@ -1,8 +1,7 @@
 
 pragma solidity >=0.7.0 <0.9.0;
-
 import "hardhat/console.sol";
-//import "ipfs://<hash>/path/to/file";
+
 
 contract practitioner{
 
@@ -15,9 +14,8 @@ contract practitioner{
 
     //personal info structure
     struct PersonalInfo{
-        bytes32 id;
         string  name;
-        uint256  dateOfBirth;
+        string  dateOfBirth;
         string  email;
         address addrss;
         address publicKey;
@@ -57,29 +55,32 @@ contract practitioner{
         return keccak256(abi.encodePacked(block.difficulty , block.timestamp ,data));
     }
 
+
     function savePatientHash(bytes32 hash) public {
         //require(msg.value >= price, "Not enough Ether sent.");
         patientRecHash[msg.sender] = hash;
     }
+
+
     //introduce patient in chain
-    function createPatient(string memory name, uint256  dateOfBirth, string memory email, address publicKey)private returns (PatientInfo memory){
-        
-        PersonalInfo memory personalInfo = PersonalInfo(generateId("data"), name, dateOfBirth, email, msg.sender, publicKey);
-        PatientInfo memory patientInfo = PatientInfo(personalInfo, false);
- 
-        allPatientList[msg.sender] = patientInfo;
-        idListPatient.push(msg.sender);
+    function createPatient(string memory name, string memory dateOfBirth, string memory email, address publicKey, address addrss )public returns (PatientInfo memory){
+
+        PatientInfo memory patientInfo = PatientInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), false);
+
+        allPatientList[addrss] = patientInfo;
+        idListPatient.push(addrss);
+        console.log(msg.sender);
         return patientInfo;
     }
 
     //introduce practitioner in chain
-    function createPractitioner(string memory name, uint256  dateOfBirth, string memory email, 
-            string memory instituteName, string memory designation, address publicKey) private returns (PractitionerInfo memory){
+    function createPractitioner(string memory name, string memory dateOfBirth, string memory email, 
+            string memory instituteName, string memory designation, address publicKey, address addrss) private returns (PractitionerInfo memory){
         
-        PersonalInfo memory personalInfo = PersonalInfo(generateId("data"), name, dateOfBirth, email, msg.sender, publicKey);
-        PractitionerInfo memory practitionerInfo = PractitionerInfo(personalInfo, instituteName, designation);
+        PractitionerInfo memory practitionerInfo = 
+        PractitionerInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), instituteName, designation);
 
-        allPractitionertList[msg.sender] = practitionerInfo;
+        allPractitionertList[addrss] = practitionerInfo;
         return practitionerInfo;
     }
 
@@ -114,7 +115,7 @@ contract practitioner{
         delete authorizedPractitionersMap[msg.sender][practitioner];
     }
 
-
+    
     function getPendingUserList() public view returns( PractitionerInfo[] memory) {
         uint256 len = idListPatient.length;
         PractitionerInfo[] memory practitioners = new PractitionerInfo[](len);
