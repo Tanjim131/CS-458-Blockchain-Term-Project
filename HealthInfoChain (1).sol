@@ -20,6 +20,7 @@ contract practitioner{
         uint256  dateOfBirth;
         string  email;
         address addrss;
+        address publicKey;
     }
 
     struct PatientInfo{
@@ -33,9 +34,6 @@ contract practitioner{
         string designation;
     }
 
-    function getHelloWorld() public {
-        return "Hello Zarin and Himanshu!";
-    }
 
     mapping(address => bytes32) private patientRecHash;
 
@@ -59,10 +57,14 @@ contract practitioner{
         return keccak256(abi.encodePacked(block.difficulty , block.timestamp ,data));
     }
 
+    function savePatientHash(bytes32 hash) public {
+        //require(msg.value >= price, "Not enough Ether sent.");
+        patientRecHash[msg.sender] = hash;
+    }
     //introduce patient in chain
-    function createPatient(string memory name, uint256  dateOfBirth, string memory email)private returns (PatientInfo memory){
+    function createPatient(string memory name, uint256  dateOfBirth, string memory email, address publicKey)private returns (PatientInfo memory){
         
-        PersonalInfo memory personalInfo = PersonalInfo(generateId("data"), name, dateOfBirth, email, msg.sender);
+        PersonalInfo memory personalInfo = PersonalInfo(generateId("data"), name, dateOfBirth, email, msg.sender, publicKey);
         PatientInfo memory patientInfo = PatientInfo(personalInfo, false);
  
         allPatientList[msg.sender] = patientInfo;
@@ -72,9 +74,9 @@ contract practitioner{
 
     //introduce practitioner in chain
     function createPractitioner(string memory name, uint256  dateOfBirth, string memory email, 
-            string memory instituteName, string memory designation) private returns (PractitionerInfo memory){
+            string memory instituteName, string memory designation, address publicKey) private returns (PractitionerInfo memory){
         
-        PersonalInfo memory personalInfo = PersonalInfo(generateId("data"), name, dateOfBirth, email, msg.sender);
+        PersonalInfo memory personalInfo = PersonalInfo(generateId("data"), name, dateOfBirth, email, msg.sender, publicKey);
         PractitionerInfo memory practitionerInfo = PractitionerInfo(personalInfo, instituteName, designation);
 
         allPractitionertList[msg.sender] = practitionerInfo;
@@ -95,20 +97,6 @@ contract practitioner{
         return false;
     }
     
-
-    function getPendingUserList() public view returns( PractitionerInfo[] memory) {
-        uint256 len = idListPatient.length;
-        PractitionerInfo[] memory practitioners = new PractitionerInfo[](len);
-
-    for (uint256 i = 0; i < len; i++) {
-        address patient = idListPatient[i];
-        if (pendingReqPtractitionersMap[patient][msg.sender].personalInfo.addrss != address(0)) {
-            practitioners[i] = pendingReqPtractitionersMap[patient][msg.sender];
-        }
-    }
-
-    return (practitioners);
-}
     function authorizeUser(address patractitioner)  private  {
         deleteFromPendingList(patractitioner);
         authorizedPractitionersMap[msg.sender][patractitioner] = allPractitionertList[patractitioner];
@@ -126,6 +114,34 @@ contract practitioner{
         delete authorizedPractitionersMap[msg.sender][practitioner];
     }
 
+
+    function getPendingUserList() public view returns( PractitionerInfo[] memory) {
+        uint256 len = idListPatient.length;
+        PractitionerInfo[] memory practitioners = new PractitionerInfo[](len);
+
+        for (uint256 i = 0; i < len; i++) {
+            address patient = idListPatient[i];
+            if (pendingReqPtractitionersMap[patient][msg.sender].personalInfo.addrss != address(0)) {
+            practitioners[i] = pendingReqPtractitionersMap[patient][msg.sender];
+            }
+        }
+
+        return (practitioners);
+    }
+
+    function getAuthUserList() public view returns( PractitionerInfo[] memory) {
+        uint256 len = idListPatient.length;
+        PractitionerInfo[] memory practitioners = new PractitionerInfo[](len);
+
+        for (uint256 i = 0; i < len; i++) {
+            address patient = idListPatient[i];
+            if (pendingReqPtractitionersMap[patient][msg.sender].personalInfo.addrss != address(0)) {
+            practitioners[i] = pendingReqPtractitionersMap[patient][msg.sender];
+            }
+        }
+
+        return (practitioners);
+    }
     
     //get pending practitioner 
     /*function getAccessiblePatientList() private view returns(PatientInfo[] memory) {
