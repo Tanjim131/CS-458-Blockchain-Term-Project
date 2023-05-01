@@ -20,5 +20,5 @@ public class EncryptedHealthDocumentId implements Serializable {
     private String patientWalletAddress;
 
     @Column(nullable = false)
-    private String encryptedHealthDocumentHash;
+    private String healthDocumentHash;
 }

@@ -1,11 +1,14 @@
 package com.example.healthinfochainwebserver.controller;
 
 import com.example.healthinfochainwebserver.entity.EncryptedHealthDocument;
+import com.example.healthinfochainwebserver.model.request.RetrieveEncryptedFileRequest;
+import com.example.healthinfochainwebserver.model.request.SaveEncryptedFileRequest;
 import com.example.healthinfochainwebserver.service.EncryptedHealthDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,15 +26,11 @@ public class EncryptedHealthDocumentController {
 
     @PostMapping(path="/file/upload")
     public ResponseEntity<EncryptedHealthDocument> uploadFile(
-            @RequestParam("patientWalletAddress") String _patientWalletAddress,
-            @RequestParam("encryptedHealthDocument") MultipartFile _encryptedHealthDocument,
-            @RequestParam("encryptedKey") String _encryptedKey
-    ) {
+            @ModelAttribute SaveEncryptedFileRequest saveEncryptedFileRequest
+            ) {
         EncryptedHealthDocument encryptedHealthDocument =
                 encryptedHealthDocumentService.saveEncryptedFile(
-                        _patientWalletAddress,
-                        _encryptedHealthDocument,
-                        _encryptedKey
+                        saveEncryptedFileRequest
                 );
 
         return new ResponseEntity<>(encryptedHealthDocument, HttpStatus.CREATED);
@@ -39,15 +38,14 @@ public class EncryptedHealthDocumentController {
 
     // This function assumes patient has only one medical record
     @PostMapping("/file/retrieve/")
-    public ResponseEntity<String> retrieveFile(
-            @RequestParam("walletAddress") String _walletAddress,
-            @RequestParam("patientPublicKey") String _patientPublicKey
-    ) {
-        String decryptedKey =
+    public ResponseEntity<EncryptedHealthDocument> retrieveFile(
+            @ModelAttribute RetrieveEncryptedFileRequest retrieveEncryptedFileRequest
+            ) {
+        EncryptedHealthDocument encryptedHealthDocument =
                 encryptedHealthDocumentService.retrieveEncryptedFile(
-                        _walletAddress,
-                        _patientPublicKey
+                        retrieveEncryptedFileRequest
                 );
-        return new ResponseEntity<>(decryptedKey, HttpStatus.OK);
+
+        return new ResponseEntity<>(encryptedHealthDocument, HttpStatus.OK);
     }
 }

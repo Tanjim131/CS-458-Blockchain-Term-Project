@@ -2,8 +2,12 @@ package com.example.healthinfochainwebserver.service;
 
 import com.example.healthinfochainwebserver.entity.EncryptedHealthDocument;
 import com.example.healthinfochainwebserver.entity.EncryptedHealthDocumentId;
+import com.example.healthinfochainwebserver.model.request.RetrieveEncryptedFileRequest;
+import com.example.healthinfochainwebserver.model.request.SaveEncryptedFileRequest;
 import com.example.healthinfochainwebserver.repository.EncryptedHealthDocumentRepository;
 import com.example.healthinfochainwebserver.util.ApplicationProperties;
+import com.example.healthinfochainwebserver.util.PythonBridge;
+import com.example.healthinfochainwebserver.util.Utility;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,11 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HexFormat;
-
-import static com.example.healthinfochainwebserver.util.ECDHCipher.*;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Builder
@@ -23,47 +23,61 @@ import static com.example.healthinfochainwebserver.util.ECDHCipher.*;
 public class EncryptedHealthDocumentServiceImpl implements EncryptedHealthDocumentService{
     private final EncryptedHealthDocumentRepository encryptedHealthDocumentRepository;
     private final ApplicationProperties applicationProperties;
+    private final PythonBridge pythonBridge;
 
     @Autowired
     public EncryptedHealthDocumentServiceImpl(
             EncryptedHealthDocumentRepository encryptedHealthDocumentRepository,
-            ApplicationProperties applicationProperties
-    ) {
+            ApplicationProperties applicationProperties,
+            PythonBridge pythonBridge) {
         this.encryptedHealthDocumentRepository = encryptedHealthDocumentRepository;
         this.applicationProperties = applicationProperties;
+        this.pythonBridge = pythonBridge;
     }
 
     public EncryptedHealthDocument saveEncryptedFile(
-            String patientWalletAddress,
-            MultipartFile encryptedFile,
-            String encryptedKey
+            SaveEncryptedFileRequest saveEncryptedFileRequest
     ) {
-        String encryptedFileHash;
+        String decryptedKey =
+                pythonBridge.decryptData(
+                        saveEncryptedFileRequest.getEncryptedKey(),
+                        applicationProperties.getPrivateKey(),
+                        saveEncryptedFileRequest.getPatientPublicKey()
+                );
 
-        MessageDigest digest = null;
+        String decryptedPDF;
         try {
-            digest = MessageDigest.getInstance("SHA-256");
-            byte[] fileBytes = encryptedFile.getBytes();
-            byte[] fileHashBytes = digest.digest(fileBytes);
-            HexFormat hex = HexFormat.of();
-            encryptedFileHash = hex.formatHex(fileHashBytes);
-        } catch (NoSuchAlgorithmException | IOException e) {
+            decryptedPDF =
+                    pythonBridge.decryptPDF(
+                            new String(saveEncryptedFileRequest.getEncryptedHealthDocument().getBytes(), StandardCharsets.UTF_8),
+                            decryptedKey
+                    );
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        System.out.println("Decrypted PDF = " + decryptedPDF);
+
+        String fileHash =
+                Utility.calculateMessageDigest(
+                        decryptedPDF.getBytes(StandardCharsets.UTF_8)
+                );
+
+        System.out.println("File Hash = " + fileHash);
+
         EncryptedHealthDocumentId encryptedHealthDocumentId =
                 EncryptedHealthDocumentId.builder()
-                        .patientWalletAddress(patientWalletAddress)
-                        .encryptedHealthDocumentHash(encryptedFileHash)
+                        .patientWalletAddress(saveEncryptedFileRequest.getPatientWalletAddress())
+                        .healthDocumentHash(fileHash)
                         .build();
 
-        EncryptedHealthDocument encryptedHealthDocument = null;
+        EncryptedHealthDocument encryptedHealthDocument;
 
         try {
             encryptedHealthDocument = EncryptedHealthDocument.builder()
                     .encryptedHealthDocumentId(encryptedHealthDocumentId)
-                    .encryptedFile(encryptedFile.getBytes())
-                    .encryptedKey(encryptedKey)
+                    .encryptedFile(saveEncryptedFileRequest.getEncryptedHealthDocument().getBytes())
+                    .encryptedKey(saveEncryptedFileRequest.getEncryptedKey())
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -72,27 +86,66 @@ public class EncryptedHealthDocumentServiceImpl implements EncryptedHealthDocume
         return encryptedHealthDocumentRepository.save(encryptedHealthDocument);
     }
 
-
-    public String retrieveEncryptedFile(
-            String patientWalletAddress,
-            String patientPublicKey
+    public EncryptedHealthDocument retrieveEncryptedFile(
+            RetrieveEncryptedFileRequest retrieveEncryptedFileRequest
     ) {
-        EncryptedHealthDocument encryptedHealthDocument =
+        EncryptedHealthDocument encryptedHealthDocumentPatientSystem =
                 encryptedHealthDocumentRepository
-                        .findFirstByEncryptedHealthDocumentId_PatientWalletAddress(patientWalletAddress);
+                        .findFirstByEncryptedHealthDocumentId_PatientWalletAddress(
+                                retrieveEncryptedFileRequest.getPatientWalletAddress()
+                        );
 
-        String encryptedKey = encryptedHealthDocument.getEncryptedKey();
-        System.out.println("Encrypted key from DB = " + encryptedKey);
-        System.out.println("Patient public key = " + rawToUncompressedPublicKey(patientPublicKey));
-        System.out.println("Server private key = " + applicationProperties.getPrivateKey());
+        String encryptedKeyPatientSystem =
+                encryptedHealthDocumentPatientSystem.getEncryptedKey();
 
-        String decryptedKey =
-                decryptData(
-                        hexStringToByteArray(encryptedKey),
+        String documentHash =
+                encryptedHealthDocumentPatientSystem
+                        .getEncryptedHealthDocumentId()
+                        .getHealthDocumentHash();
+
+        String decryptedKeyPatientSystem =
+                pythonBridge.decryptData(
+                        encryptedKeyPatientSystem,
                         applicationProperties.getPrivateKey(),
-                        rawToUncompressedPublicKey(patientPublicKey)
+                        retrieveEncryptedFileRequest.getPatientPublicKey()
                 );
 
-        return decryptedKey;
+        String decryptedPDF =
+                pythonBridge.decryptPDF(
+                        new String(
+                                encryptedHealthDocumentPatientSystem.getEncryptedFile(),
+                                StandardCharsets.UTF_8
+                        ),
+                        decryptedKeyPatientSystem
+                );
+
+        String encryptedPDFSystemPractitioner =
+                pythonBridge.encryptPDF(
+                        decryptedPDF,
+                        applicationProperties.getSymmetricKey()
+                );
+
+        String encryptedKeySystemPractitioner =
+                pythonBridge.encryptData(
+                        applicationProperties.getSymmetricKey(),
+                        applicationProperties.getPrivateKey(),
+                        retrieveEncryptedFileRequest.getPractitionerPublicKey()
+                );
+
+        EncryptedHealthDocumentId encryptedHealthDocumentId =
+                EncryptedHealthDocumentId
+                        .builder()
+                        .healthDocumentHash(documentHash)
+                        .patientWalletAddress(retrieveEncryptedFileRequest.getPatientWalletAddress())
+                        .build();
+
+        EncryptedHealthDocument encryptedHealthDocumentPractitionerSystem =
+                EncryptedHealthDocument
+                        .builder()
+                        .encryptedFile(encryptedPDFSystemPractitioner.getBytes(StandardCharsets.UTF_8))
+                        .encryptedKey(encryptedKeySystemPractitioner)
+                        .build();
+
+        return encryptedHealthDocumentPractitionerSystem;
     }
 }
