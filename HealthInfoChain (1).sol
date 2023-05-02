@@ -2,7 +2,6 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 
-
 contract practitioner{
 
     enum UserType { Patient, Practitioner }
@@ -147,7 +146,7 @@ contract practitioner{
         return (practitioners);
     }
     
-    //get pending practitioner 
+    //get authorized patients 
     function getAccessiblePatientList(address practitioner) private view returns(PatientInfo[] memory) {
         uint256 len = idListPatient.length;
         PatientInfo[] memory patientInfos = new PatientInfo[](len);
@@ -162,6 +161,21 @@ contract practitioner{
         return (patientInfos);
     }
     
+
+    //get all existing patient 
+    function getAllPatientList(address practitioner) private view returns(PatientInfo[] memory) {
+        uint256 len = idListPatient.length;
+        PatientInfo[] memory patientInfos = new PatientInfo[](len);
+
+        for (uint256 i = 0; i < len; i++) {
+            address patient = idListPatient[i];
+            if (accessiblePatientsMap[practitioner][patient].personalInfo.addrss != address(0)) {
+            patientInfos[i] = accessiblePatientsMap[practitioner][patient];
+            }
+        }
+
+        return (patientInfos);
+    }
 
 
     function requestPermission(address patient, address practitioner) private  {
