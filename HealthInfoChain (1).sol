@@ -1,6 +1,5 @@
 
 pragma solidity >=0.7.0 <0.9.0;
-import "hardhat/console.sol";
 
 
 contract practitioner{
@@ -39,6 +38,7 @@ contract practitioner{
     mapping(address=> PatientInfo ) private allPatientList;
     mapping(address=> PractitionerInfo ) private allPractitionertList;
     address[] private idListPatient;
+    address[] private idListPractitioner;
 
     //patient end counts
     mapping(address=> mapping(address => PractitionerInfo) ) private authorizedPractitionersMap;
@@ -56,9 +56,9 @@ contract practitioner{
     }
 
 
-    function savePatientHash(bytes32 hash) public {
+    function savePatientHash(bytes32 hash, address patient) public {
         //require(msg.value >= price, "Not enough Ether sent.");
-        patientRecHash[msg.sender] = hash;
+        patientRecHash[patient] = hash;
     }
 
 
@@ -81,6 +81,8 @@ contract practitioner{
         PractitionerInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), instituteName, designation);
 
         allPractitionertList[addrss] = practitionerInfo;
+
+        idListPractitioner.push(addrss);
         return practitionerInfo;
     }
 
@@ -98,62 +100,86 @@ contract practitioner{
         return false;
     }
     
-    function authorizeUser(address patractitioner)  private  {
-        deleteFromPendingList(patractitioner);
-        authorizedPractitionersMap[msg.sender][patractitioner] = allPractitionertList[patractitioner];
+    function authorizeUser(address patractitioner, address patient)  private  {
+        deleteFromPendingList(patractitioner, patient);
+        authorizedPractitionersMap[patient][patractitioner] = allPractitionertList[patractitioner];
     }
 
-    function denyUser(address patractitioner)  private  {
-        deleteFromPendingList(patractitioner);
+    function denyUser(address patractitioner, address patient)  private  {
+        deleteFromPendingList(patractitioner, patient);
     }
 
-    function deleteFromPendingList(address practitioner) private {
-        delete pendingReqPtractitionersMap[msg.sender][practitioner]; 
+    function deleteFromPendingList(address practitioner, address patient) private {
+        delete pendingReqPtractitionersMap[patient][practitioner]; 
     }
     
-    function revokeAccess(address practitioner) private {
-        delete authorizedPractitionersMap[msg.sender][practitioner];
+    function revokeAccess(address practitioner, address patient) private {
+        delete authorizedPractitionersMap[patient][practitioner];
     }
 
     
-    function getPendingUserList() public view returns( PractitionerInfo[] memory) {
-        uint256 len = idListPatient.length;
+    function getPendingUserList(address patient) public view returns( PractitionerInfo[] memory) {
+       uint256 len = idListPractitioner.length;
         PractitionerInfo[] memory practitioners = new PractitionerInfo[](len);
 
         for (uint256 i = 0; i < len; i++) {
-            address patient = idListPatient[i];
-            if (pendingReqPtractitionersMap[patient][msg.sender].personalInfo.addrss != address(0)) {
-            practitioners[i] = pendingReqPtractitionersMap[patient][msg.sender];
+            address practitioner = idListPractitioner[i];
+            if (pendingReqPtractitionersMap[patient][practitioner].personalInfo.addrss != address(0)) {
+            practitioners[i] = pendingReqPtractitionersMap[patient][practitioner];
             }
         }
 
         return (practitioners);
     }
 
-    function getAuthUserList() public view returns( PractitionerInfo[] memory) {
-        uint256 len = idListPatient.length;
+    function getAuthUserList(address patient) public view returns( PractitionerInfo[] memory) {
+        uint256 len = idListPractitioner.length;
         PractitionerInfo[] memory practitioners = new PractitionerInfo[](len);
 
         for (uint256 i = 0; i < len; i++) {
-            address patient = idListPatient[i];
-            if (pendingReqPtractitionersMap[patient][msg.sender].personalInfo.addrss != address(0)) {
-            practitioners[i] = pendingReqPtractitionersMap[patient][msg.sender];
+            address practitioner = idListPractitioner[i];
+            if (authorizedPractitionersMap[patient][practitioner].personalInfo.addrss != address(0)) {
+            practitioners[i] = authorizedPractitionersMap[patient][practitioner];
             }
         }
 
         return (practitioners);
     }
     
-    //get pending practitioner 
-    /*function getAccessiblePatientList() private view returns(PatientInfo[] memory) {
-        
-        return accessiblePatientsMap(msg.sender);
+    //get authorized patients 
+    function getAccessiblePatientList(address practitioner) private view returns(PatientInfo[] memory) {
+        uint256 len = idListPatient.length;
+        PatientInfo[] memory patientInfos = new PatientInfo[](len);
+
+        for (uint256 i = 0; i < len; i++) {
+            address patient = idListPatient[i];
+            if (accessiblePatientsMap[practitioner][patient].personalInfo.addrss != address(0)) {
+            patientInfos[i] = accessiblePatientsMap[practitioner][patient];
+            }
+        }
+
+        return (patientInfos);
     }
-    */
+    
+
+    //get all existing patient 
+    function getAllPatientList(address practitioner) private view returns(PatientInfo[] memory) {
+        uint256 len = idListPatient.length;
+        PatientInfo[] memory patientInfos = new PatientInfo[](len);
+
+        for (uint256 i = 0; i < len; i++) {
+            address patient = idListPatient[i];
+            if (accessiblePatientsMap[practitioner][patient].personalInfo.addrss != address(0)) {
+            patientInfos[i] = accessiblePatientsMap[practitioner][patient];
+            }
+        }
+
+        return (patientInfos);
+    }
 
 
-    function requestPermission(address patient) private  {
-        pendingReqPtractitionersMap[patient][msg.sender] = allPractitionertList[msg.sender] ;
+    function requestPermission(address patient, address practitioner) private  {
+        pendingReqPtractitionersMap[patient][practitioner] = allPractitionertList[practitioner] ;
     }
 
 
