@@ -56,9 +56,9 @@ contract practitioner{
     }
 
 
-    function savePatientHash(bytes32 hash) public {
+    function savePatientHash(bytes32 hash, address patient) public {
         //require(msg.value >= price, "Not enough Ether sent.");
-        patientRecHash[msg.sender] = hash;
+        patientRecHash[patient] = hash;
     }
 
 
