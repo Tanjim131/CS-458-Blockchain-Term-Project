@@ -19,19 +19,24 @@ from cryptography.fernet import Fernet
     
 #     return bytes(key, 'UTF-8')
 
-def encrypt_file(file_data, key):
+def encrypt_file(file_content, key):
     """
     Given a filename (str) and key (bytes), it encrypts the file and write it
     """
     f = Fernet(key)
 
+    file_content = bytes(file_content, 'UTF-8')
+
     # with open(filename, "rb") as file:
     #     # read all file data
     #     file_data = file.read()
 
-    encrypted_data = f.encrypt(file_data)
+    encrypted_data = f.encrypt(file_content)
 
-    return encrypted_data
+    # with open("encrypt.pdf", "wb") as f:
+    #     f.write(encrypted_data)
+
+    return encrypted_data.hex()
 
 def decrypt_file(encrypted_data, key):
     """
@@ -42,11 +47,12 @@ def decrypt_file(encrypted_data, key):
     #     # read the encrypted data
     #     encrypted_data = file.read()
     # decrypt data
-    decrypted_data = f.decrypt(encrypted_data)
+    decrypted_data = f.decrypt(bytes.fromhex(encrypted_data))
     # write the original file
-    # with open("decrypt.pdf", "wb") as file:
-    #     file.write(decrypted_data)
-    return decrypted_data
+    with open("decrypt.pdf", "wb") as file:
+        file.write(decrypted_data)
+
+    return decrypted_data.hex()
 
 # uncomment this if it's the first time you run the code, to generate the key
 # write_key()
@@ -63,7 +69,6 @@ if __name__ == "__main__":
     file_content = sys.argv[2]
     key = sys.argv[3]
 
-    file_content = bytes(file_content, 'UTF-8')
     key = bytes(key, 'UTF-8')
 
     if function_name == "encrypt_file":

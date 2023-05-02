@@ -75,8 +75,8 @@ def decrypt_data(encrypted_data, private_key_hex, public_key_hex):
 # uncompressed_tanjim_public_key_hex = raw_to_uncompressed_public_key(tanjim_raw_public_key)
 # uncompressed_zarin_public_key_hex = raw_to_uncompressed_public_key(zarin_raw_public_key)
 
-# encrypted_data = encrypt_data(bytes(data, 'UTF-8'), tanjim_private_key, uncompressed_zarin_public_key_hex)
-# decrypted_data = decrypt_data(bytes.fromhex("dc90bf810b10d250cbc05b3797cf31e9ad1d2cd195b1d20620b009881772c392578b6346689c0cab7517e3a7269db6b8"), zarin_private_key, uncompressed_tanjim_public_key_hex)
+# encrypted_data = encrypt_data(data, tanjim_private_key, uncompressed_zarin_public_key_hex)
+# decrypted_data = decrypt_data(bytes.fromhex(encrypted_data), zarin_private_key, uncompressed_tanjim_public_key_hex)
 
 # print("Encrypted data:", encrypted_data)
 # print("Decrypted data:", decrypted_data)
