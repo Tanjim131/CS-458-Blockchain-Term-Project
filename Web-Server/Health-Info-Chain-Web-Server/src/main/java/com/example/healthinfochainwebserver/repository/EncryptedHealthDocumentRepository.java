@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EncryptedHealthDocumentRepository extends JpaRepository<EncryptedHealthDocument, EncryptedHealthDocumentId> {
-    EncryptedHealthDocument findFirstByEncryptedHealthDocumentId_PatientWalletAddress(String patientWalletAddress);
+    EncryptedHealthDocument findFirstById_PatientWalletAddress(String patientWalletAddress);
 }

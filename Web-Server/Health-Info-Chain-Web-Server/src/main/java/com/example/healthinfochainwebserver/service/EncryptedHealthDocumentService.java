@@ -1,16 +1,16 @@
 package com.example.healthinfochainwebserver.service;
 
-import com.example.healthinfochainwebserver.entity.EncryptedHealthDocument;
 import com.example.healthinfochainwebserver.model.request.RetrieveEncryptedFileRequest;
 import com.example.healthinfochainwebserver.model.request.SaveEncryptedFileRequest;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.healthinfochainwebserver.model.response.HealthDocumentResponse;
+import com.example.healthinfochainwebserver.model.response.UploadFileResponse;
 
 public interface EncryptedHealthDocumentService {
-    EncryptedHealthDocument saveEncryptedFile(
+    UploadFileResponse saveEncryptedFile(
             SaveEncryptedFileRequest saveEncryptedFileRequest
     );
 
-    EncryptedHealthDocument retrieveEncryptedFile(
+    HealthDocumentResponse retrieveEncryptedFile(
             RetrieveEncryptedFileRequest retrieveEncryptedFileRequest
     );
 }

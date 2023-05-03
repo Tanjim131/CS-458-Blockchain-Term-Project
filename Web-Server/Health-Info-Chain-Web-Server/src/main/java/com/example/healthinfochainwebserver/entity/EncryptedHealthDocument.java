@@ -13,11 +13,14 @@ import lombok.NoArgsConstructor;
 @Entity
 public class EncryptedHealthDocument{
     @EmbeddedId
-    private EncryptedHealthDocumentId encryptedHealthDocumentId;
+    private EncryptedHealthDocumentId id;
+
+    @Column(nullable = false)
+    private String fileExtension;
 
     @Lob
-    @Column(columnDefinition = "mediumblob", nullable = false)
-    private byte[] encryptedFile;
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String encryptedFileContent;
 
     @Lob
     @Column(nullable = false)

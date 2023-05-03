@@ -1,6 +1,5 @@
 package com.example.healthinfochainwebserver.util;
 
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
@@ -18,5 +17,11 @@ public class Utility {
             throw new RuntimeException(e);
         }
         return fileHash;
+    }
+
+    public static String escapeString(String decryptedFile) {
+        return decryptedFile.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("'", "\\'");
     }
 }

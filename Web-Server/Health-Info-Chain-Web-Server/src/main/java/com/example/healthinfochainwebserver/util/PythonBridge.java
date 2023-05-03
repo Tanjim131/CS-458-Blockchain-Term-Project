@@ -54,8 +54,10 @@ public class PythonBridge {
         }
     }
 
-    private String callEncryptDecryptPDF(String functionName, String fileContent, String key) {
-        String pythonScriptName = "encrypt-decrypt-pdf.py";
+    public byte[] encryptFile(String fileContent, String key) {
+        String pythonScriptName = "encrypt-decrypt-file.py";
+        String functionName = "encrypt_file";
+
         Resource resource = resourceLoader.getResource("classpath:" + pythonScriptName);
         String scriptPath = null;
         try {
@@ -63,6 +65,9 @@ public class PythonBridge {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("Encrypt Passing=" + fileContent);
+        System.out.println("Encrypt Key=" + key);
 
         ProcessBuilder pb = new ProcessBuilder(
                 "python",
@@ -82,27 +87,58 @@ public class PythonBridge {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
             String output = reader.readLine();
+            //System.out.println("Reader line count = " + reader.lines().count());
+            for(String e : reader.lines().toList()){
+                System.out.println("Element Encrypt =" + e);
+            }
             process.waitFor();
-            return output;
+            return output.getBytes();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String encryptPDF(String fileContent, String key){
-        return callEncryptDecryptPDF(
-                "encrypt_file",
-                fileContent,
-                key
-        );
-    }
+    public byte[] decryptFile(byte[] fileContent, String key) {
+        String pythonScriptName = "encrypt-decrypt-file.py";
+        String functionName = "decrypt_file";
 
-    public String decryptPDF(String fileContent, String key){
-        return callEncryptDecryptPDF(
-                "decrypt_file",
-                fileContent,
+        Resource resource = resourceLoader.getResource("classpath:" + pythonScriptName);
+        String scriptPath = null;
+        try {
+            scriptPath = resource.getFile().getAbsolutePath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Decrypt Passing=" + new String(fileContent, StandardCharsets.UTF_8));
+        System.out.println("Decrypt Key=" + key);
+
+        ProcessBuilder pb = new ProcessBuilder(
+                "python",
+                scriptPath,
+                functionName,
+                new String(fileContent, StandardCharsets.UTF_8),
                 key
         );
+
+        pb.redirectErrorStream(true);
+        Process process = null;
+        try {
+            process = pb.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+            String output = reader.readLine();
+            for(String e : reader.lines().toList()){
+                System.out.println("Element Decrypt =" + e);
+            }
+            process.waitFor();
+            return output.getBytes();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String encryptData(String data, String privateKeyHex, String publicKeyHex){

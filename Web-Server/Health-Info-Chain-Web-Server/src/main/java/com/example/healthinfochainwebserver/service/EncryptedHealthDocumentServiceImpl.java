@@ -4,18 +4,21 @@ import com.example.healthinfochainwebserver.entity.EncryptedHealthDocument;
 import com.example.healthinfochainwebserver.entity.EncryptedHealthDocumentId;
 import com.example.healthinfochainwebserver.model.request.RetrieveEncryptedFileRequest;
 import com.example.healthinfochainwebserver.model.request.SaveEncryptedFileRequest;
+import com.example.healthinfochainwebserver.model.response.HealthDocumentResponse;
+import com.example.healthinfochainwebserver.model.response.UploadFileResponse;
 import com.example.healthinfochainwebserver.repository.EncryptedHealthDocumentRepository;
 import com.example.healthinfochainwebserver.util.ApplicationProperties;
 import com.example.healthinfochainwebserver.util.PythonBridge;
 import com.example.healthinfochainwebserver.util.Utility;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @Service
 @Builder
@@ -35,7 +38,8 @@ public class EncryptedHealthDocumentServiceImpl implements EncryptedHealthDocume
         this.pythonBridge = pythonBridge;
     }
 
-    public EncryptedHealthDocument saveEncryptedFile(
+    @Transactional
+    public UploadFileResponse saveEncryptedFile(
             SaveEncryptedFileRequest saveEncryptedFileRequest
     ) {
         String decryptedKey =
@@ -45,25 +49,29 @@ public class EncryptedHealthDocumentServiceImpl implements EncryptedHealthDocume
                         saveEncryptedFileRequest.getPatientPublicKey()
                 );
 
-        String decryptedPDF;
+        byte[] decryptedFileByteArray;
         try {
-            decryptedPDF =
-                    pythonBridge.decryptPDF(
-                            new String(saveEncryptedFileRequest.getEncryptedHealthDocument().getBytes(), StandardCharsets.UTF_8),
+            decryptedFileByteArray =
+                    pythonBridge.decryptFile(
+                            saveEncryptedFileRequest
+                                    .getEncryptedHealthDocument()
+                                    .getBytes(),
                             decryptedKey
                     );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Decrypted PDF = " + decryptedPDF);
+        String decryptedFileByteString = new String(decryptedFileByteArray, StandardCharsets.UTF_8);
+        String withoutPrefixSuffix = decryptedFileByteString.substring(2, decryptedFileByteString.length() - 1);
+        String decryptedFile = withoutPrefixSuffix.replace("\\r\\n", System.lineSeparator());
 
         String fileHash =
                 Utility.calculateMessageDigest(
-                        decryptedPDF.getBytes(StandardCharsets.UTF_8)
+                        decryptedFile.getBytes(StandardCharsets.UTF_8)
                 );
 
-        System.out.println("File Hash = " + fileHash);
+        System.out.println(decryptedFileByteString);
 
         EncryptedHealthDocumentId encryptedHealthDocumentId =
                 EncryptedHealthDocumentId.builder()
@@ -75,55 +83,74 @@ public class EncryptedHealthDocumentServiceImpl implements EncryptedHealthDocume
 
         try {
             encryptedHealthDocument = EncryptedHealthDocument.builder()
-                    .encryptedHealthDocumentId(encryptedHealthDocumentId)
-                    .encryptedFile(saveEncryptedFileRequest.getEncryptedHealthDocument().getBytes())
-                    .encryptedKey(saveEncryptedFileRequest.getEncryptedKey())
+                    .id(encryptedHealthDocumentId)
+                    .encryptedFileContent(
+                            new String(
+                                    saveEncryptedFileRequest
+                                            .getEncryptedHealthDocument()
+                                            .getBytes(),
+                                    StandardCharsets.UTF_8
+                            )
+                    )
+                    .encryptedKey(
+                            new String(
+                                    saveEncryptedFileRequest
+                                            .getEncryptedKey()
+                                            .getBytes(),
+                                    StandardCharsets.UTF_8
+                            )
+                    )
+                    .fileExtension(saveEncryptedFileRequest.getFileExtension())
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return encryptedHealthDocumentRepository.save(encryptedHealthDocument);
+        encryptedHealthDocumentRepository.save(encryptedHealthDocument);
+
+        UploadFileResponse uploadFileResponse =
+                UploadFileResponse
+                        .builder()
+                        .encryptedFileContent(
+                                encryptedHealthDocument
+                                        .getEncryptedFileContent()
+                        )
+                        .healthDocumentHash(fileHash)
+                        .build();
+
+        return uploadFileResponse;
     }
 
-    public EncryptedHealthDocument retrieveEncryptedFile(
+    public HealthDocumentResponse retrieveEncryptedFile(
             RetrieveEncryptedFileRequest retrieveEncryptedFileRequest
     ) {
         EncryptedHealthDocument encryptedHealthDocumentPatientSystem =
                 encryptedHealthDocumentRepository
-                        .findFirstByEncryptedHealthDocumentId_PatientWalletAddress(
+                        .findFirstById_PatientWalletAddress(
                                 retrieveEncryptedFileRequest.getPatientWalletAddress()
                         );
 
-        String encryptedKeyPatientSystem =
-                encryptedHealthDocumentPatientSystem.getEncryptedKey();
-
-        String documentHash =
+        String fileHash =
                 encryptedHealthDocumentPatientSystem
-                        .getEncryptedHealthDocumentId()
+                        .getId()
                         .getHealthDocumentHash();
 
         String decryptedKeyPatientSystem =
                 pythonBridge.decryptData(
-                        encryptedKeyPatientSystem,
+                        encryptedHealthDocumentPatientSystem.getEncryptedKey(),
                         applicationProperties.getPrivateKey(),
                         retrieveEncryptedFileRequest.getPatientPublicKey()
                 );
 
-        String decryptedPDF =
-                pythonBridge.decryptPDF(
-                        new String(
-                                encryptedHealthDocumentPatientSystem.getEncryptedFile(),
-                                StandardCharsets.UTF_8
-                        ),
+        byte[] decryptedFileByteArray =
+                pythonBridge.decryptFile(
+                        encryptedHealthDocumentPatientSystem.getEncryptedFileContent().getBytes(),
                         decryptedKeyPatientSystem
                 );
 
-        String encryptedPDFSystemPractitioner =
-                pythonBridge.encryptPDF(
-                        decryptedPDF,
-                        applicationProperties.getSymmetricKey()
-                );
+        String decryptedFileByteString = new String(decryptedFileByteArray, StandardCharsets.UTF_8);
+        String decryptedWithoutPrefixSuffix = decryptedFileByteString.substring(2, decryptedFileByteString.length() - 1);
+        String decryptedFile = decryptedWithoutPrefixSuffix.replace("\\r\\n", System.lineSeparator());
 
         String encryptedKeySystemPractitioner =
                 pythonBridge.encryptData(
@@ -132,20 +159,33 @@ public class EncryptedHealthDocumentServiceImpl implements EncryptedHealthDocume
                         retrieveEncryptedFileRequest.getPractitionerPublicKey()
                 );
 
-        EncryptedHealthDocumentId encryptedHealthDocumentId =
-                EncryptedHealthDocumentId
-                        .builder()
-                        .healthDocumentHash(documentHash)
-                        .patientWalletAddress(retrieveEncryptedFileRequest.getPatientWalletAddress())
-                        .build();
+        byte[] encryptedFileSystemPractitionerByteArray =
+                pythonBridge.encryptFile(
+                        Utility.escapeString(decryptedFile),
+                        applicationProperties.getSymmetricKey()
+                );
 
-        EncryptedHealthDocument encryptedHealthDocumentPractitionerSystem =
-                EncryptedHealthDocument
+        String encryptedFileSystemPractitionerByteString =
+                new String(
+                        encryptedFileSystemPractitionerByteArray,
+                        StandardCharsets.UTF_8
+                );
+
+        String encryptedFileSystemPractitioner =
+                encryptedFileSystemPractitionerByteString.substring(
+                        2,
+                        encryptedFileSystemPractitionerByteString.length() - 1
+                );
+
+        HealthDocumentResponse healthDocumentResponse =
+                HealthDocumentResponse
                         .builder()
-                        .encryptedFile(encryptedPDFSystemPractitioner.getBytes(StandardCharsets.UTF_8))
+                        .encryptedHealthDocument(encryptedFileSystemPractitioner)
                         .encryptedKey(encryptedKeySystemPractitioner)
+                        .fileHash(fileHash)
+                        .fileExtension(encryptedHealthDocumentPatientSystem.getFileExtension())
                         .build();
 
-        return encryptedHealthDocumentPractitionerSystem;
+        return healthDocumentResponse;
     }
 }

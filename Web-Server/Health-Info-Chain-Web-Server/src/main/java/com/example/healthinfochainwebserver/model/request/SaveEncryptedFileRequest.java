@@ -15,4 +15,5 @@ public class SaveEncryptedFileRequest {
     private String patientPublicKey;
     private MultipartFile encryptedHealthDocument;
     private String encryptedKey;
+    private String fileExtension;
 }
