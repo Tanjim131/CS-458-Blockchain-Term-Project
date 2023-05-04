@@ -1,5 +1,6 @@
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.0;
+import "hardhat/console.sol";
 
 
 contract practitioner{
@@ -17,7 +18,7 @@ contract practitioner{
         string  dateOfBirth;
         string  email;
         address addrss;
-        address publicKey;
+        bytes  publicKey;
     }
 
     struct PatientInfo{
@@ -55,15 +56,25 @@ contract practitioner{
         return keccak256(abi.encodePacked(block.difficulty , block.timestamp ,data));
     }
 
+    function checkHash(bytes32 hash, address patient) public returns (bool){
+        require(allPatientList[patient].personalInfo.addrss 
+            != address(0), "Not a Valid patient");
 
+        if(patientRecHash[patient] == hash){
+            return true;
+        }
+        return false;
+    }
     function savePatientHash(bytes32 hash, address patient) public {
-        //require(msg.value >= price, "Not enough Ether sent.");
+        require(allPatientList[patient].personalInfo.addrss 
+            != address(0), "Not a Valid patient");
+
         patientRecHash[patient] = hash;
     }
 
 
     //introduce patient in chain
-    function createPatient(string memory name, string memory dateOfBirth, string memory email, address publicKey, address addrss )public returns (PatientInfo memory){
+    function createPatient(string memory name, string memory dateOfBirth, string memory email, bytes memory publicKey, address addrss )public returns (PatientInfo memory){
 
         PatientInfo memory patientInfo = PatientInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), false);
 
@@ -75,7 +86,7 @@ contract practitioner{
 
     //introduce practitioner in chain
     function createPractitioner(string memory name, string memory dateOfBirth, string memory email, 
-            string memory instituteName, string memory designation, address publicKey, address addrss) private returns (PractitionerInfo memory){
+            string memory instituteName, string memory designation, bytes memory publicKey, address addrss) private returns (PractitionerInfo memory){
         
         PractitionerInfo memory practitionerInfo = 
         PractitionerInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), instituteName, designation);
@@ -100,20 +111,20 @@ contract practitioner{
         return false;
     }
     
-    function authorizeUser(address patractitioner, address patient)  private  {
+    function authorizeUser(address patractitioner, address patient)  public  {
         deleteFromPendingList(patractitioner, patient);
         authorizedPractitionersMap[patient][patractitioner] = allPractitionertList[patractitioner];
     }
 
-    function denyUser(address patractitioner, address patient)  private  {
+    function denyUser(address patractitioner, address patient)  public  {
         deleteFromPendingList(patractitioner, patient);
     }
 
-    function deleteFromPendingList(address practitioner, address patient) private {
+    function deleteFromPendingList(address practitioner, address patient) public {
         delete pendingReqPtractitionersMap[patient][practitioner]; 
     }
     
-    function revokeAccess(address practitioner, address patient) private {
+    function revokeAccess(address practitioner, address patient) public {
         delete authorizedPractitionersMap[patient][practitioner];
     }
 
@@ -147,7 +158,7 @@ contract practitioner{
     }
     
     //get authorized patients 
-    function getAccessiblePatientList(address practitioner) private view returns(PatientInfo[] memory) {
+    function getAccessiblePatientList(address practitioner) public view returns(PatientInfo[] memory) {
         uint256 len = idListPatient.length;
         PatientInfo[] memory patientInfos = new PatientInfo[](len);
 
@@ -163,14 +174,14 @@ contract practitioner{
     
 
     //get all existing patient 
-    function getAllPatientList(address practitioner) private view returns(PatientInfo[] memory) {
+    function getAllPatientList() public view returns(PatientInfo[] memory) {
         uint256 len = idListPatient.length;
         PatientInfo[] memory patientInfos = new PatientInfo[](len);
 
         for (uint256 i = 0; i < len; i++) {
             address patient = idListPatient[i];
-            if (accessiblePatientsMap[practitioner][patient].personalInfo.addrss != address(0)) {
-            patientInfos[i] = accessiblePatientsMap[practitioner][patient];
+            if (allPatientList[patient].personalInfo.addrss != address(0)) {
+            patientInfos[i] = allPatientList[patient];
             }
         }
 
