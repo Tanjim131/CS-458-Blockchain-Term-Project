@@ -86,7 +86,7 @@ contract practitioner{
 
     //introduce practitioner in chain
     function createPractitioner(string memory name, string memory dateOfBirth, string memory email, 
-            string memory instituteName, string memory designation, bytes memory publicKey, address addrss) private returns (PractitionerInfo memory){
+            string memory instituteName, string memory designation, bytes memory publicKey, address addrss) public returns (PractitionerInfo memory){
         
         PractitionerInfo memory practitionerInfo = 
         PractitionerInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), instituteName, designation);
