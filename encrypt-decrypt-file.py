@@ -111,20 +111,20 @@ contract practitioner{
         return false;
     }
     
-    function authorizeUser(address patractitioner, address patient)  private  {
+    function authorizeUser(address patractitioner, address patient)  public  {
         deleteFromPendingList(patractitioner, patient);
         authorizedPractitionersMap[patient][patractitioner] = allPractitionertList[patractitioner];
     }
 
-    function denyUser(address patractitioner, address patient)  private  {
+    function denyUser(address patractitioner, address patient)  public  {
         deleteFromPendingList(patractitioner, patient);
     }
 
-    function deleteFromPendingList(address practitioner, address patient) private {
+    function deleteFromPendingList(address practitioner, address patient) public {
         delete pendingReqPtractitionersMap[patient][practitioner]; 
     }
     
-    function revokeAccess(address practitioner, address patient) private {
+    function revokeAccess(address practitioner, address patient) public {
         delete authorizedPractitionersMap[patient][practitioner];
     }
 
@@ -158,7 +158,7 @@ contract practitioner{
     }
     
     //get authorized patients 
-    function getAccessiblePatientList(address practitioner) private view returns(PatientInfo[] memory) {
+    function getAccessiblePatientList(address practitioner) public view returns(PatientInfo[] memory) {
         uint256 len = idListPatient.length;
         PatientInfo[] memory patientInfos = new PatientInfo[](len);
 
@@ -174,7 +174,7 @@ contract practitioner{
     
 
     //get all existing patient 
-    function getAllPatientList(address practitioner) private view returns(PatientInfo[] memory) {
+    function getAllPatientList(address practitioner) public view returns(PatientInfo[] memory) {
         uint256 len = idListPatient.length;
         PatientInfo[] memory patientInfos = new PatientInfo[](len);
 
