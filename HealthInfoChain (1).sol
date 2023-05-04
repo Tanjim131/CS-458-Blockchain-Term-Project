@@ -69,7 +69,10 @@ contract practitioner{
         require(allPatientList[patient].personalInfo.addrss 
             != address(0), "Not a Valid patient");
 
+    
+        allPatientList[patient].isRecStored =true;
         patientRecHash[patient] = hash;
+        
     }
 
 
@@ -190,6 +193,15 @@ contract practitioner{
 
 
     function requestPermission(address patient, address practitioner) private  {
+        require(allPatientList[patient].personalInfo.addrss 
+            != address(0), "Not a Valid patient");
+
+        require(allPractitionertList[practitioner].personalInfo.addrss 
+            != address(0), "Not a Valid Practitioner");
+
+        require(allPatientList[patient].isRecStored 
+            != true, "Patient does not have any record");
+
         pendingReqPtractitionersMap[patient][practitioner] = allPractitionertList[practitioner] ;
     }
 
