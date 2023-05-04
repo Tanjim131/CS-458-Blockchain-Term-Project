@@ -77,19 +77,19 @@ contract practitioner{
 
 
     //introduce patient in chain
-    function createPatient(string memory name, string memory dateOfBirth, string memory email, bytes memory publicKey, address addrss )public returns (PatientInfo memory){
+    function createPatient(string memory name, string memory dateOfBirth, string memory email, bytes memory publicKey, address addrss )public {
 
         PatientInfo memory patientInfo = PatientInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), false);
 
         allPatientList[addrss] = patientInfo;
         idListPatient.push(addrss);
-        console.log(msg.sender);
-        return patientInfo;
+        //console.log(msg.sender);
+
     }
 
     //introduce practitioner in chain
     function createPractitioner(string memory name, string memory dateOfBirth, string memory email, 
-            string memory instituteName, string memory designation, bytes memory publicKey, address addrss) public returns (PractitionerInfo memory){
+            string memory instituteName, string memory designation, bytes memory publicKey, address addrss) public  {
         
         PractitionerInfo memory practitionerInfo = 
         PractitionerInfo(PersonalInfo(name, dateOfBirth, email, addrss, publicKey), instituteName, designation);
@@ -97,12 +97,12 @@ contract practitioner{
         allPractitionertList[addrss] = practitionerInfo;
 
         idListPractitioner.push(addrss);
-        return practitionerInfo;
+    
     }
 
 
     // Check if practitioner has access
-    function isAuthorized(address practitionerAddr, address patientId) public view returns(bool) {
+    function isAuthorized(address practitionerAddr, address patientId) public returns(bool) {
         // Check if practitioner id is valid
         if(allPractitionertList[practitionerAddr].personalInfo.addrss != address(0)){
             // Check if patient has authorized that practitioner
@@ -192,7 +192,7 @@ contract practitioner{
     }
 
 
-    function requestPermission(address patient, address practitioner) private  {
+    function requestPermission(address patient, address practitioner) public  {
         require(allPatientList[patient].personalInfo.addrss 
             != address(0), "Not a Valid patient");
 
