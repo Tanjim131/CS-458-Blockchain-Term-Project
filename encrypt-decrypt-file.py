@@ -19,6 +19,8 @@ def encrypt_file(filename, key):
         # read all file data
         file_data = file.read()
 
+    print("File data = ", file_data)
+
     encrypted_data = f.encrypt(file_data)
 
     with open(f"encrypted.{get_file_extension(filename)}", "wb") as f:
@@ -40,19 +42,9 @@ def decrypt_file(encrypted_data, key, file_extesion):
 
     return decrypted_data.decode('UTF-8')
 
-# uncomment this if it's the first time you run the code, to generate the key
-# write_key()
-# load the key
-# key = load_key("E7-6xpblDveex3HPV4KN-uFqZgoYHHDJU2YYhlQj9ZA=")
-# file name
-# file = "sample.pdf"
-# encrypt it
-# encrypted_data = encrypt_file(file, key)
-# decrypt_file(encrypted_data, key)
-
 if __name__ == "__main__":
     function_name = sys.argv[1]
-    file_name = sys.argv[2]
+    file_name_or_content = sys.argv[2]
     key = sys.argv[3]
 
     if len(sys.argv) == 5:
@@ -61,9 +53,9 @@ if __name__ == "__main__":
     key = bytes(key, 'UTF-8')
 
     if function_name == "encrypt_file":
-        decrypted_file_content = encrypt_file(file_name, key)
+        decrypted_file_content = encrypt_file(file_name_or_content, key)
         print(decrypted_file_content)
 
     if function_name == "decrypt_file":
-        decrypted_file_content = decrypt_file(file_name, key, file_extesion)
+        decrypted_file_content = decrypt_file(file_name_or_content, key, file_extesion)
         print(decrypted_file_content)

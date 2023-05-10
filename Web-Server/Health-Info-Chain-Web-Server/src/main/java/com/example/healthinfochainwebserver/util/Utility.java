@@ -20,7 +20,7 @@ public class Utility {
     }
 
     public static String escapeString(String decryptedFile) {
-        return decryptedFile.replace("\\", "\\\\")
+        return decryptedFile
                 .replace("\"", "\\\"")
                 .replace("'", "\\'");
     }

@@ -35,7 +35,6 @@ public class EncryptedHealthDocumentController {
         return new ResponseEntity<>(uploadFileResponse, HttpStatus.CREATED);
     }
 
-    // This function assumes patient has only one medical record
     @PostMapping("/file/retrieve/")
     public ResponseEntity<HealthDocumentResponse> retrieveFile(
             @ModelAttribute RetrieveEncryptedFileRequest retrieveEncryptedFileRequest
