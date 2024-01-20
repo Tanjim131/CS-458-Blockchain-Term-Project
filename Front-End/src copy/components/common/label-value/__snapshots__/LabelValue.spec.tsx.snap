@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputForm Component Check if component exists or not and capture snapshot 1`] = `
+<span
+  className="label-container"
+>
+  <p
+    className="label"
+  >
+    label
+  </p>
+  <p
+    className="value"
+    data-value="value"
+  >
+    value
+  </p>
+</span>
+`;

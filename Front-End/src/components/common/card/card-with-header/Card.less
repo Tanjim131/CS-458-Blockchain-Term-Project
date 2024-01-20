@@ -1,0 +1,93 @@
+.my-wallet-color-card {
+    .ant-card-head {
+        height: 54px;
+        background-color: #D19B00;
+        color: #FFFFFF;
+        font-weight: bold;
+
+        .ant-card-head-title {
+            padding: 14px 0px;
+        }
+    }
+    .ant-card-body{
+        background-color: #FFFFFF;
+        .card-coin-and-button {
+            display: flex;
+            justify-content: space-between;
+            .card-content {
+                display: inline-block;
+                .coin-balance {
+                    font-size: 14px;
+                    color: #282828;
+                }
+                .coin-balance-amount {
+                    display: inline;
+                    font-size: 32px;
+                    font-weight: bold;
+                    color: #282828;
+                    padding-right: 8px;
+                }
+                .coins-icon {
+                    display: inline;
+                    vertical-align: initial;
+                }
+            }
+            
+            .add-free-coins-button {
+                width: fit-content;
+                display: inline;
+                margin-top: 9px;
+            }
+        }
+        @media screen and (max-width: 575px) {
+            .card-coin-and-button {
+                display: block;
+            }
+            .card-content {
+                display: block !important;
+            }
+        }
+    }
+
+    .view-detail-text-button {
+        display: block;
+        color: #4696FF;
+        cursor: pointer;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #D2D2D280;
+    }
+}
+
+.header-color-light-yellow {
+    .ant-card-head {
+        background-color: #FFE58F;
+        color: #282828;
+    }
+}
+.header-color-light-pink {
+    .ant-card-head {
+        background-color: #FFBB96;
+        color: #282828;
+    }
+}
+.header-color-light-purple {
+    .ant-card-head {
+        background-color: #722ED1;
+    }
+}
+.header-color-light-green {
+    .ant-card-head {
+        background-color: #0CA789;
+    }
+}
+.header-color-light-blue {
+    .ant-card-head {
+        background-color: #0050B3;
+    }
+}
+.header-color-light-grey {
+    .ant-card-head {
+        background-color: #646464;
+    }
+}

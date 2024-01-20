@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorModal Component Check if component exists or not and capture snapshot 1`] = `
+<Modal
+  centered={true}
+  className="error-modal"
+  confirmLoading={false}
+  destroyOnClose={true}
+  footer="footer"
+  maskClosable={true}
+  maskTransitionName="fade"
+  okType="primary"
+  onCancel={[MockFunction]}
+  transitionName="zoom"
+  visible={true}
+  width={520}
+>
+  <div
+    className="modal-content-wrapper"
+  >
+    <Space
+      direction="vertical"
+      size="middle"
+    >
+      <ForwardRef(CloseCircleOutlined)
+        className="check-circle-icon"
+      />
+      <Component />
+    </Space>
+  </div>
+</Modal>
+`;

@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CountCard Component Check if component exists or not and capture snapshot 1`] = `
+<Card
+  className="expiry-range-card undefined"
+>
+  <p
+    className="expiry-range-card-title expiry-range-card-title-title"
+  >
+    title
+  </p>
+  <p
+    className="expiry-range-card-total-count"
+  >
+    2
+  </p>
+  <Progress
+    className="circular-progress circular-progress-title"
+    format={[Function]}
+    percent={100}
+    showInfo={true}
+    size="default"
+    strokeColor="color"
+    strokeLinecap="round"
+    strokeWidth={3}
+    trailColor={null}
+    type="circle"
+    width={82}
+  />
+</Card>
+`;

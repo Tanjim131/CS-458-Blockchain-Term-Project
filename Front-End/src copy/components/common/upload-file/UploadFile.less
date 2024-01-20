@@ -1,0 +1,97 @@
+.document-details .ant-image {
+  width: 100%;
+  border: 1px solid #95989a;
+  border-radius: 2px;
+  background: #eeeeee;
+  height: 96px;
+  color: #9a9a9a;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  padding: 3px;
+  cursor: pointer;
+  .ant-image-img {
+    height: 90px;
+    width: auto;
+    max-width: 120px;
+  }
+}
+.document-details {
+  margin-top: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  .remove-file {
+    float: right;
+    font-size: 24px;
+    color: #f05a23;
+  }
+  .document-information {
+    display: flex;
+    align-items: center;
+    .pdf-file-icon {
+      font-size: 32px;
+      color: #f05a23;
+    }
+    .document-name-size {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+      .document-name {
+        color: #282828;
+        word-break: break-all;
+      }
+      .document-size {
+        color: #788ca0;
+      }
+    }
+  }
+}
+.upload-document-field {
+  margin: 20px 0 5px 0;
+}
+.upload-file-error {
+  color: #d24b19;
+}
+.s3-upload-file-error {
+  border-color: #d24b19 !important;
+}
+.ant-upload-list-picture-card-container {
+  display: none;
+}
+.s3-upload-file {
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  background: #f9f9f9;
+  height: 115px;
+  color: #788ca0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  &:hover {
+    border: 1px solid #40a9ff;
+  }
+  input {
+    display: none;
+  }
+  .upload-text {
+    font-size: 14px;
+    letter-spacing: 0.14px;
+    color: #282828;
+    font-weight: 600;
+    margin-bottom: 8px;
+    .upload-icon {
+      margin-right: 8px;
+    }
+  }
+}

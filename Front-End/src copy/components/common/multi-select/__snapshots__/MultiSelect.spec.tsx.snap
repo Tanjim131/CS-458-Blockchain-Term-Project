@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MultiSelect Component Check if component exists or not and capture snapshot 1`] = `
+<ForwardRef(InternalSelect)
+  allowClear={true}
+  className="multiselect-wrapper "
+  filterOption={[Function]}
+  mode="multiple"
+  onChange={[MockFunction]}
+  placeholder="select the city"
+  value="value"
+/>
+`;

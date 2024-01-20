@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmModal Component Check if component exists or not and capture snapshot 1`] = `
+<Modal
+  centered={false}
+  className="confirm-modal"
+  confirmLoading={false}
+  footer={
+    Array [
+      <Button
+        className="width_auto"
+        onClick={[MockFunction]}
+        type={3}
+      >
+        <FormattedMessage
+          id="cancel"
+          values={Object {}}
+        />
+      </Button>,
+      <Button
+        className="width_auto"
+        disabled={false}
+        onClick={[MockFunction]}
+        type={0}
+      >
+        Confirm
+      </Button>,
+    ]
+  }
+  maskTransitionName="fade"
+  okType="primary"
+  onCancel={[MockFunction]}
+  title="title"
+  transitionName="zoom"
+  visible={true}
+  width={520}
+/>
+`;

@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Wallet Component Check if component exists or not and capture snapshot 1`] = `
+<Card
+  className="my-wallet-color-card color"
+  title="title"
+>
+  <div
+    className="card-coin-and-button"
+  >
+    <div
+      className="card-content"
+    >
+      <div
+        className="coin-balance"
+      >
+        <FormattedMessage
+          id="coin_balance"
+          values={Object {}}
+        />
+      </div>
+      <div
+        className="coin-balance-amount"
+      >
+        10
+      </div>
+      <img
+        className="coins-icon"
+        src=""
+      />
+    </div>
+    <Button
+      className="add-free-coins-button"
+      onClick={[MockFunction]}
+      type={0}
+    >
+      <FormattedMessage
+        id="add_free_coins"
+        values={Object {}}
+      />
+    </Button>
+  </div>
+</Card>
+`;

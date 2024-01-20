@@ -1,0 +1,55 @@
+.filter-modal {
+    .ant-modal-title {
+        font-weight: bold;
+    }
+
+    .filter-heading{
+        padding-bottom: 8px;
+        color: #788CA0;
+    }
+    
+    .checkable-tag{
+        margin-bottom: 10px;
+    }
+
+    .ant-modal-footer {
+        .clear-filter-button {
+            width: fit-content;
+            float: left;
+        }
+        .cancel-filter-button {
+            width: fit-content;
+        }
+        .apply-filter-button {
+            width: fit-content;
+        }
+    }
+}
+
+.filter-tag {
+    display: inline-block;
+    position: relative;
+    ::after {
+        content: "\2022";
+        font-weight: 900;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+        color: #F15A23;
+        text-align: end;
+        position: absolute;
+        top: -11px;
+        right: -4px;
+        font-size: 24px;
+    }
+    &:active, &:focus {
+        ::after {
+            top: -18px;
+            right: -11px;
+        }
+    }
+}
+
+.filter-button {
+    margin-left: 18px;
+}

@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SuccessModal Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <Alert
+    closable={true}
+    message="message"
+    showIcon={true}
+    type="info"
+  />
+</Fragment>
+`;

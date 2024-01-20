@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SuccessModal Component Check if component exists or not and capture snapshot 1`] = `
+<Modal
+  centered={false}
+  className="success-modal "
+  closable={false}
+  confirmLoading={false}
+  destroyOnClose={true}
+  footer="footer"
+  maskClosable={true}
+  maskTransitionName="fade"
+  okType="primary"
+  onCancel={[MockFunction]}
+  style={Object {}}
+  transitionName="zoom"
+  visible={true}
+  width={520}
+>
+  <div
+    className="modal-content-wrapper"
+  >
+    <Space
+      direction="vertical"
+      size="middle"
+    >
+      <ForwardRef(CheckCircleFilled)
+        className="check-circle-icon"
+      />
+      children
+    </Space>
+  </div>
+</Modal>
+`;

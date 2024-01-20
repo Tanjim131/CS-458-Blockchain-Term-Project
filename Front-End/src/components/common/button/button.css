@@ -1,0 +1,100 @@
+.primary {
+  border: none;
+  outline: none;
+  background: #f05a23;
+  width: 100%;
+  color: white;
+  height: 40px;
+  border-radius: 4px;
+  line-height: 14px;
+  white-space: normal;
+
+  &:hover,
+  &:focus {
+    background: #ff7846;
+    color: white;
+  }
+  &:active {
+    background: #d24b19;
+  }
+}
+
+.secondary {
+  border: 1px solid #d9d9d9;
+  outline: none;
+  background: #ffffff;
+  width: 100%;
+  color: #595959;
+  height: 40px;
+  border-radius: 4px;
+  line-height: 14px;
+  white-space: normal;
+
+  &:hover,
+  &:focus {
+    color: #f05a23;
+  }
+  &:active {
+    color: #ff7846;
+  }
+}
+
+.link {
+  color: #4696ff;
+  width: 100%;
+  height: 40px;
+  outline: none;
+  border: none;
+  background: none;
+  text-align: center;
+  box-shadow: none;
+
+  &:hover,
+  &:focus {
+    color: #4671ff;
+    background: none;
+    border: none;
+    text-decoration: underline !important;
+    span {
+      text-decoration: underline;
+    }
+  }
+  &:active {
+    color: #788ca0;
+    background: none;
+    border: none;
+    span {
+      text-decoration: underline;
+    }
+  }
+}
+
+.normal {
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  line-height: 14px;
+  white-space: normal;
+}
+
+.success {
+  border: none;
+  outline: none;
+  background: #4696FF;
+  width: 100%;
+  color: white;
+  height: 40px;
+  border-radius: 4px;
+  line-height: 14px;
+  white-space: normal;
+
+  &:hover,
+  &:focus {
+    background: #4696FF;
+    color: white;
+  }
+  &:active {
+    background: #4696FF;
+  }
+}
+

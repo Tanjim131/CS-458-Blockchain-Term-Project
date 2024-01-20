@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FilterModal Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <Button
+    className="filter-button filter-tag"
+    icon={<ForwardRef(FilterOutlined) />}
+    onClick={[MockFunction]}
+    size="middle"
+  />
+  <Modal
+    className="filter-modal className"
+    closable={true}
+    confirmLoading={false}
+    footer={
+      Array [
+        <Button
+          className="clear-filter-button"
+          onClick={[MockFunction]}
+          type={2}
+        >
+          <FormattedMessage
+            id="clear_all_filter"
+            values={Object {}}
+          />
+        </Button>,
+        <Button
+          className="cancel-filter-button"
+          onClick={[MockFunction]}
+          type={3}
+        >
+          <FormattedMessage
+            id="cancel"
+            values={Object {}}
+          />
+        </Button>,
+        <Button
+          className="apply-filter-button"
+          disabled={true}
+          onClick={[MockFunction]}
+        >
+          <FormattedMessage
+            id="apply_filter"
+            values={Object {}}
+          />
+        </Button>,
+      ]
+    }
+    maskClosable={true}
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[MockFunction]}
+    title={
+      <FormattedMessage
+        id="filter_by"
+        values={Object {}}
+      />
+    }
+    transitionName="zoom"
+    visible={true}
+    width={520}
+  />
+</Fragment>
+`;

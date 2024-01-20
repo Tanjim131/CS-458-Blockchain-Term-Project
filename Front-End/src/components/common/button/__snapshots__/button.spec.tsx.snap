@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button Component Check if component exists or not and capture snapshot 1`] = `
+<Button
+  className="primary "
+  disabled={false}
+  href="https://placeholder.com"
+  htmlType="string"
+  icon="icon"
+  id=""
+  onClick={[MockFunction]}
+>
+  children
+</Button>
+`;

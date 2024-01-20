@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatePickerForm Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <FormItem
+    className="add-document-form-field"
+    label="label"
+    name="formItemNumber"
+    rules={
+      Array [
+        Object {
+          "message": "message",
+          "required": true,
+        },
+      ]
+    }
+  >
+    <Picker
+      allowClear={false}
+      disabledDate={[MockFunction]}
+      format="1/2/2020"
+      onChange={[MockFunction]}
+    />
+  </FormItem>
+</Fragment>
+`;

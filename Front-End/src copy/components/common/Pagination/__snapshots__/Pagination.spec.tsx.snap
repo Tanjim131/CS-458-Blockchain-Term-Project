@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TablePagination Component Check if component exists or not and capture snapshot 1`] = `
+<Pagination
+  className="table-pagination"
+  current={1}
+  defaultCurrent={1}
+  onChange={[MockFunction]}
+  onShowSizeChange={[MockFunction]}
+  pageSize={10}
+  pageSizeOptions={
+    Array [
+      "10",
+      "20",
+      "50",
+      "100",
+    ]
+  }
+  responsive={true}
+  showSizeChanger={true}
+  total={100}
+/>
+`;

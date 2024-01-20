@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormDropdown Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <FormItem
+    className="add-document-form-field"
+    label="label"
+    name="name"
+    rules={
+      Array [
+        Object {
+          "message": "message",
+          "required": true,
+        },
+      ]
+    }
+    tooltip={
+      Object {
+        "autoAdjustOverflow": true,
+        "icon": <ForwardRef(InfoCircleOutlined) />,
+        "overlayClassName": "tooltip-add-document",
+        "placement": "rightTop",
+        "title": "title",
+      }
+    }
+  >
+    <ForwardRef(InternalSelect)
+      allowClear={true}
+      onChange={[MockFunction]}
+      placeholder="placeholder"
+    />
+  </FormItem>
+</Fragment>
+`;

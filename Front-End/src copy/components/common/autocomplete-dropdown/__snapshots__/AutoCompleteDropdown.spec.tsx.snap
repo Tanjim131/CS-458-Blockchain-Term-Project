@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AutoCompleteDropdown Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <FormItem
+    className="auto-complete-dropdwon"
+    label="label"
+    name="name"
+    rules={
+      Array [
+        Object {
+          "message": "message",
+          "required": true,
+        },
+      ]
+    }
+    tooltip={
+      Object {
+        "autoAdjustOverflow": true,
+        "icon": <ForwardRef(InfoCircleOutlined) />,
+        "overlayClassName": "tooltip-add-document",
+        "placement": "rightTop",
+        "title": "anytitle",
+      }
+    }
+  >
+    <ForwardRef(InternalSelect)
+      allowClear={true}
+      filterOption={[Function]}
+      onChange={[MockFunction]}
+      optionFilterProp="children"
+      placeholder="any text"
+      showSearch={true}
+    />
+  </FormItem>
+</Fragment>
+`;

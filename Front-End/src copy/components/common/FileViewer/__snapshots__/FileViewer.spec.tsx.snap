@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FileViewer Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <iframe
+    height="100%"
+    src="http://www.jsonplaceholder.pdf"
+    width="100%"
+  />
+</Fragment>
+`;

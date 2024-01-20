@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BackToTop Component Check if component exists or not and capture snapshot 1`] = `
+<Memo(BackTop)>
+  <Tooltip
+    arrowPointAtCenter={false}
+    autoAdjustOverflow={true}
+    mouseEnterDelay={0.1}
+    mouseLeaveDelay={0.1}
+    placement="top"
+    title="Back to Top"
+    transitionName="zoom-big-fast"
+  >
+    <img
+      src="mock-file"
+    />
+  </Tooltip>
+</Memo(BackTop)>
+`;

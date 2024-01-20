@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UploadFile Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <FormItem
+    className="add-document-form-field upload-document-field"
+    label={
+      <FormattedMessage
+        id="upload_soft_copy_label"
+        values={Object {}}
+      />
+    }
+    name="docFile"
+    tooltip={
+      Object {
+        "icon": <ForwardRef(InfoCircleOutlined) />,
+        "overlayClassName": "tooltip-add-document",
+        "placement": "right",
+        "title": <FormattedMessage
+          id="upload_soft_copy_info"
+          values={Object {}}
+        />,
+      }
+    }
+  >
+    <div
+      className="s3-upload-file  disabled"
+      onClick={[Function]}
+    >
+      <div
+        className="upload-text"
+      >
+        <ForwardRef(UploadOutlined)
+          className="upload-icon"
+        />
+        <FormattedMessage
+          id="upload_from_desktop"
+          values={Object {}}
+        />
+      </div>
+      <div>
+        <FormattedMessage
+          id="upload_information2"
+          values={Object {}}
+        />
+      </div>
+      <div>
+        <FormattedMessage
+          id="upload_information3"
+          values={Object {}}
+        />
+      </div>
+      <input
+        accept="application/pdf, image/png, image/jpeg"
+        name="files"
+        onChange={[Function]}
+        style={
+          Object {
+            "display": "none",
+          }
+        }
+        type="file"
+      />
+    </div>
+  </FormItem>
+</Fragment>
+`;

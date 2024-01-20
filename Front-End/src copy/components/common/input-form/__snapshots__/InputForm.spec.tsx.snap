@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputForm Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <FormItem
+    className="className"
+    label="formItemLabel"
+    name="formItemName"
+    rules={
+      Array [
+        Object {
+          "message": "ruleMsg",
+          "pattern": /regex/,
+          "required": true,
+        },
+        [Function],
+      ]
+    }
+    tooltip={
+      Object {
+        "icon": <ForwardRef(InfoCircleOutlined) />,
+        "overlayClassName": "tooltip-add-document",
+        "placement": "rightTop",
+        "title": "title",
+      }
+    }
+  >
+    <Input
+      allowClear={true}
+      placeholder="placeHolderText"
+      type="text"
+    />
+  </FormItem>
+</Fragment>
+`;

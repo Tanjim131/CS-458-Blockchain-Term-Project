@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddDocumentSuccessModal Component Check if component exists or not and capture snapshot 1`] = `
+<Fragment>
+  <Modal
+    centered={true}
+    className="add-document-success-modal"
+    confirmLoading={false}
+    footer={
+      Array [
+        <Button
+          onClick={[MockFunction]}
+        >
+          intiate
+        </Button>,
+        <Button
+          onClick={[MockFunction]}
+          type={2}
+        >
+          ok
+        </Button>,
+        <Button
+          onClick={[MockFunction]}
+          type={2}
+        >
+          cancel
+        </Button>,
+      ]
+    }
+    maskTransitionName="fade"
+    okType="primary"
+    onCancel={[MockFunction]}
+    onOk={[MockFunction]}
+    transitionName="zoom"
+    visible={true}
+    width={520}
+  >
+    <Component />
+  </Modal>
+</Fragment>
+`;

@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchBox Component Check if component exists or not and capture snapshot 1`] = `
+<Search
+  allowClear={true}
+  className="search-box-class "
+  disabled={true}
+  onChange={[Function]}
+  onPressEnter={[MockFunction]}
+  onSearch={[MockFunction]}
+  placeholder="search"
+  value="value"
+/>
+`;
